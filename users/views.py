@@ -6,8 +6,12 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+
+from .Producer import UserProducer
 from .models import User
 from .serializers import UserSerializer
+
+from django.http import JsonResponse
 
 
 # 获取所有用户
@@ -126,3 +130,28 @@ def upload_csv_to_db(request):
         # 打印异常信息到控制台
         print(f"Error: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+# 更新用户信息并发送消息到 Kafka。
+@api_view(['POST'])
+def update_user_kafka(request):
+    try:
+        userId = request.data.get('id')
+        user = User.objects.get(id=userId)
+        user.name = request.data.get('name', user.name)
+        user.email = request.data.get('email', user.email)
+        user.salary = request.data.get('salary', user.salary)
+        user.save()
+
+        # 发送更新消息到 Kafka
+        producer = UserProducer()
+        producer.send_user_update({
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'salary': user.salary
+        })
+
+        return JsonResponse({'status': 'success'})
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 # from users import views
 from users.views import (get_users, get_user, create_user, update_user, delete_user
-, export_users_csv, upload_csv_to_db)
+, export_users_csv, upload_csv_to_db, update_user_kafka)
 
 urlpatterns = [
     # polls
@@ -41,5 +41,9 @@ urlpatterns = [
     path('users/csv/', export_users_csv, name='export_users_csv'),
 
     path('users/uploadCsv/', upload_csv_to_db, name='upload_csv_to_db'),
+
+    # kafka
+    path('users/update_user_kafka/', update_user_kafka, name='update_user_kafka'),
+
 
 ]

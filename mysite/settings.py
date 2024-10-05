@@ -139,3 +139,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+KAFKA_BOOTSTRAP_SERVERS = 'localhost:9092'
+KAFKA_USER_TOPIC = 'user_update'
