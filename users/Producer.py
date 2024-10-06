@@ -28,3 +28,7 @@ class UserProducer:
             self.producer.flush()  # 确保消息被推送
         except Exception as e:
             print(f"Failed to send message: {str(e)}")
+
+
+# git 
+# def delivery_report(self, err, msg):
