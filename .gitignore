@@ -1,0 +1,25 @@
+# Python 字节码文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 其他常见的 Python 临时文件
+*.egg-info/
+dist/
+build/
+*.log
+*.pid
+*.swp
+*.swo
+
+# 虚拟环境
+venv/
+env/
+.venv/
+.env/
+
+# IDE 和编辑器文件
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
