@@ -17,12 +17,14 @@ from django.http import JsonResponse
 # 获取所有用户
 @api_view(['GET'])
 def get_users(request):
+    print("get_users view called")
     # 1.添加查询条件，sort
     # users = (User.objects.all()
     #          .filter(salary__gt=request.data['salary'])).order_by('name')
+    users = User.objects.all()
 
     # 2. native query
-    users = User.objects.raw('SELECT * FROM users WHERE email LIKE %s', ['%@outlook.com'])
+    # users = User.objects.raw('SELECT * FROM users WHERE email LIKE %s', ['%@outlook.com'])
 
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
@@ -31,6 +33,7 @@ def get_users(request):
 # 获取单个用户
 @api_view(['GET'])
 def get_user(request, id):
+
     try:
         user = User.objects.get(pk=id)
     except User.DoesNotExist:

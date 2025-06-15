@@ -1,0 +1,125 @@
+@startuml bank_etl
+package "ETL System" {
+  class DataSource {
+    -source_id: String
+    -type: String (e.g., CoreBanking, CRM)
+    -connection_details: Map
+    +connect(): Connection
+    +fetchData(): DataFrame
+  }
+
+  class DataPipeline {
+    -pipeline_id: String
+    -source: DataSource
+    -transformations: List<Transformation>
+    -destination: DataSink
+    +execute(): Boolean
+    +monitorPerformance(): Metrics
+  }
+
+  class Transformation {
+    -type: String (e.g., SQL, Python)
+    -script: String
+    +apply(data: DataFrame): DataFrame
+  }
+
+  class DataSink {
+    -sink_id: String
+    -type: String (e.g., Iceberg, Tableau)
+    -connection_details: Map
+    +writeData(data: DataFrame): Boolean
+  }
+
+  class FundFlowAnalyzer {
+    -client_id: String
+    -time_period: DateRange
+    +calculateInflows(): Double
+    +calculateOutflows(): Double
+    +generateReport(): Report
+  }
+
+  class DataQualityMonitor {
+    -rules: List<QualityRule>
+    +checkQuality(data: DataFrame): QualityReport
+  }
+
+  DataPipeline o--> DataSource
+  DataPipeline o--> DataSink
+  DataPipeline --> Transformation
+  FundFlowAnalyzer --> DataPipeline
+  DataQualityMonitor --> DataPipeline
+}
+@enduml
+
+@startuml
+actor 分析师
+participant Airflow
+participant 数据管道
+participant 数据源
+participant 转换
+participant 数据接收器
+participant 资金流向分析器
+participant 数据质量监控器
+
+分析师 -> Airflow: 调度 ETL 任务
+Airflow -> 数据管道: 触发管道
+数据管道 -> 数据源: 获取数据
+数据源 --> 数据管道: 返回数据框架
+数据管道 -> 数据质量监控器: 检查数据质量
+数据质量监控器 --> 数据管道: 返回质量报告
+数据管道 -> 转换: 应用转换
+转换 --> 数据管道: 返回转换后的数据框架
+数据管道 -> 资金流向分析器: 分析资金流向
+资金流向分析器 --> 数据管道: 返回流入/流出数据
+数据管道 -> 数据接收器: 写入 Iceberg
+数据管道 -> 数据接收器: 写入 Tableau
+数据接收器 --> 数据管道: 确认写入
+数据管道 --> Airflow: 报告完成
+Airflow --> 分析师: 通知完成
+
+@enduml
+
+
+@startuml
+skinparam linetype ortho
+
+package "数据源" {
+    [核心银行系统] --> [Kafka]
+    [CRM 系统] --> [Kafka]
+    [外部数据源] --> [Kafka]
+}
+
+package "数据摄取" {
+    [Kafka] --> [Spark Streaming]
+}
+
+package "数据处理" {
+    [Spark Streaming] --> [Hadoop HDFS]
+    [Hadoop HDFS] --> [Spark Batch]
+    [Spark Batch] --> [Apache Iceberg]
+    [Spark Batch] --> [数据质量监控器]
+}
+
+package "数据存储" {
+    [Apache Iceberg] --> [Hive]
+    [Apache Iceberg] --> [Trino]
+}
+
+package "调度" {
+    [Airflow] --> [Spark Batch]
+    [Airflow] --> [数据质量监控器]
+}
+
+package "可视化" {
+    [Trino] --> [Tableau]
+}
+
+package "分析" {
+    [资金流向分析器] --> [Apache Iceberg]
+    [资金流向分析器] --> [Tableau]
+}
+
+[分析师] --> [Tableau]
+[分析师] --> [Airflow]
+@enduml
+

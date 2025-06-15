@@ -30,20 +30,25 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
 
-    # postgresql
-    path('users/getUsers/', get_users, name='get_users'),  # 获取所有用户
-    path('users/getUsers/<int:id>/', get_user, name='get_user'),  # 获取单个用户
-    path('users/create/', create_user, name='create_user'),  # 创建用户
-    path('users/update/<int:id>/', update_user, name='update_user'),  # 更新用户
-    path('users/delete/<int:id>/', delete_user, name='delete_user'),  # 删除用户
+
+
+
+    # users app : postgresql
+    path('users/getUsers', get_users, name='get_users'),  # 获取所有用户
+    path('users/getUsers/<int:id>', get_user, name='get_user'),  # 获取单个用户
+    path('users/create', create_user, name='create_user'),  # 创建用户
+    path('users/update/<int:id>', update_user, name='update_user'),  # 更新用户
+    path('users/delete/<int:id>', delete_user, name='delete_user'),  # 删除用户
 
     # 需求6 下載cvs
-    path('users/csv/', export_users_csv, name='export_users_csv'),
+    path('users/csv', export_users_csv, name='export_users_csv'),
 
-    path('users/uploadCsv/', upload_csv_to_db, name='upload_csv_to_db'),
+    path('users/uploadCsv', upload_csv_to_db, name='upload_csv_to_db'),
 
-    # kafka
-    path('users/update_user_kafka/', update_user_kafka, name='update_user_kafka'),
+    # kafka :
+    path('users/update_user_kafka', update_user_kafka, name='update_user_kafka'),
 
+    # aws :
+    # path('aws/create_sqs_queue_name',  create_sqs_queue_name, name='update_user_kafka'),
 
 ]
