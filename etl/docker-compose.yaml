@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  localstack:
+    container_name: localstack-glue-demo
+    image: localstack/localstack:4.3.0 
+    ports:
+      - "127.0.0.1:4566:4566" # Default LocalStack endpoint
+      # 你可能还需要暴露其他端口，具体取决于你模拟的服务
+      # - "127.0.0.1:4510-4559:4510-4559" # 外部服务端口范围
+    environment:
+      # 指定需要模拟的 AWS 服务，只列出 Glue 和 S3 就好
+      - SERVICES=s3,glue,databrew # databrew 用于 Glue Data Catalog
+      - DEFAULT_REGION=us-east-1 # 设置一个默认区域
+      - AWS_ACCESS_KEY_ID=test # 模拟的 Access Key
+      - AWS_SECRET_ACCESS_KEY=test # 模拟的 Secret Key
+      # LocalStack 的 PRO 版本支持更多高级功能，免费版已足够学习基础
+      # - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN} # 如果使用 PRO 版本需要 token
+    volumes:
+      # 可选：持久化 LocalStack 数据，避免重启容器数据丢失
+      - localstack_data:/var/lib/localstack
+      # 可选：挂载 Docker socket，Lambda 等服务可能需要 (Glue 通常不需要)
+      # - "/var/run/docker.sock:/var/run/docker.sock"
+
+volumes:
+  localstack_data:
